@@ -1,0 +1,37 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# apart from the middleware node, create
+# this many nodes in addition to the middleware
+INSTANCES=1
+
+# the nodes will be called middleware.example.net
+# and node0.example.net, you can change this here
+DOMAIN="netbuilder.private"
+
+# the instances is a hostonly network, this will
+# be the prefix to the subnet they use
+SUBNET="10.50.15"
+
+Vagrant.configure(2) do |config|
+  config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+  config.vm.define "puppetmaster" do |masterconfig|
+    masterconfig.vm.box = "ubuntu/trusty64"
+    masterconfig.vm.network "public_network", ip: "#{SUBNET}.90"
+    masterconfig.vm.hostname = "puppetmaster.#{DOMAIN}"
+#   masterconfig.vm.provider "virtualbox" do |vb|
+#      vb.memory = "4096"
+#      vb.cpus = "4"
+#    end
+#    masterconfig.vm.provision "shell", path: "bootstrap.sh"
+  end
+  
+  INSTANCES.times do |i|
+    config.vm.define "agent#{i}".to_sym do |agentconfig|
+      agentconfig.vm.box = "ubuntu/trusty64"
+      agentconfig.vm.network "public_network", ip: "#{SUBNET}.%d" % (190 + i + 1)
+      agentconfig.vm.hostname = "agent%d.#{DOMAIN}" % i
+#     agentconfig.vm.provision "shell", path: "bootstrap_ag.sh"
+    end
+  end
+end
