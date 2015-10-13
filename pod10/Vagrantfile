@@ -7,7 +7,7 @@ INSTANCES=1
 
 # the nodes will be called middleware.example.net
 # and node0.example.net, you can change this here
-DOMAIN="netbuilder.private"
+DOMAIN="example.com"
 
 # the instances is a hostonly network, this will
 # be the prefix to the subnet they use
